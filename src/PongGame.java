@@ -9,6 +9,8 @@ import java.awt.image.DataBufferInt;
  */
 public class PongGame extends Canvas implements Runnable {
 
+	public static String OS;
+
 	public static int width = 1000;
 	public static int height = 600;
 
@@ -21,12 +23,15 @@ public class PongGame extends Canvas implements Runnable {
 	Screen screen;
 	Keyboard keyboard;
 
-	Ball ball;
+	public static Ball ball;
 	Paddle paddleRight, paddleLeft;
+	Player playerOne, playerTwo;
 
 	private boolean running;
 
 	public PongGame() {
+		OS = System.getProperty("os.name");
+
 		this.setSize(width, height);
 
 		window = new JFrame();
@@ -39,21 +44,25 @@ public class PongGame extends Canvas implements Runnable {
 		screen = new Screen(width, height);
 
 		keyboard = new Keyboard();
-		keyboard.disableAccentMenu();
 		this.addKeyListener(keyboard);
+		if (OS == "MacOS") {
+			keyboard.disableAccentMenu();
+		}
 
 		ball = new Ball(new int[] {width, height});
 		ball.x = (width - ball.width) / 2;
 		ball.y = (height - ball.height) / 2;
-		float[] velocity = getRandomVelocity(3);
-		ball.xVelocity = velocity[0];
-		ball.yVelocity = velocity[1];
+		ball.setVelocity(getRandomVelocity(ball.xVelocity));
 		System.out.println(ball.xVelocity);
 
 		paddleRight = new Paddle(width - Paddle.width - 5, (height - Paddle.height) / 2);
 		paddleLeft = new Paddle(5, (height - Paddle.height) / 2);
 
+		playerOne = new Player(paddleRight);
+		playerTwo = new Player(paddleLeft);
+
 		window.setVisible(true);
+		this.requestFocus();
 		this.requestFocusInWindow();
 	}
 
@@ -104,17 +113,25 @@ public class PongGame extends Canvas implements Runnable {
 			ball.yVelocity = -ball.yVelocity;
 		}
 
-		paddleLeft.collide(ball);
-		paddleRight.collide(ball);
-
-		if (ball.x > width - 20 || ball.x <= 0) {
-			ball.xVelocity = -ball.xVelocity;
-		}
-
 		keyboard.update();
-		paddleRight.update(keyboard.getKeys());
-		paddleLeft.update(new boolean[] {keyboard.getKeys()[2], keyboard.getKeys()[3]});
+		playerOne.update(keyboard.getKeys());
+		playerTwo.update(new boolean[] {keyboard.getKeys()[2], keyboard.getKeys()[3]});
 
+		if (ball.x <= 0) {
+			playerOne.score++;
+			ball = new Ball(new int[] {width, height});
+			ball.x = (width - ball.width) / 2;
+			ball.y = (height - ball.height) / 2;
+			ball.setVelocity(getRandomVelocity(ball.xVelocity));
+			ball.xVelocity = -(Math.abs(ball.xVelocity));
+		} else if (ball.x > width - 20) {
+			playerTwo.score++;
+			ball = new Ball(new int[] {width, height});
+			ball.x = (width - ball.width) / 2;
+			ball.y = (height - ball.height) / 2;
+			ball.setVelocity(getRandomVelocity(ball.xVelocity));
+			ball.xVelocity = (Math.abs(ball.xVelocity));
+		}
 	}
 
 	public void render() {
@@ -145,7 +162,7 @@ public class PongGame extends Canvas implements Runnable {
 		bs.show();
 	}
 
-	public float[] getRandomVelocity(float netVelocity) {
+	public float[] getRandomNetVelocity(float netVelocity) {
 		float[] velocity = new float[2];
 
 
@@ -161,11 +178,27 @@ public class PongGame extends Canvas implements Runnable {
 		return velocity;
 	}
 
+	public float[] getRandomVelocity(float xVelocity) {
+		float[] velocity = new float[2];
+
+		float yVelocity = (float) (Math.random() * Math.tan(Math.toRadians(ball.MAX_ANGLE))) * xVelocity;
+		if (Math.random() < 0.5) {
+			yVelocity = -yVelocity;
+		}
+
+		velocity[0] = xVelocity;
+		velocity[1] = yVelocity;
+
+		return velocity;
+	}
+
 	public static void main(String[] args) {
 		PongGame pg = new PongGame();
 		pg.window.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				pg.keyboard.enableAccentMenu();
+				if (OS == "MacOS") {
+					pg.keyboard.enableAccentMenu();
+				}
 				System.exit(0);
 			}
 		});

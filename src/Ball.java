@@ -5,8 +5,11 @@ import java.awt.*;
  */
 public class Ball {
 
+	public static final float MAX_ANGLE = 55;
+	public static float xVelocity = 9;
+
 	int x, y;
-	public float xVelocity, yVelocity;
+	public float yVelocity;
 	public int width, height;
 
 	int[] bounds;
@@ -44,5 +47,10 @@ public class Ball {
 		if (this.y < 0 || this.y > bounds[1] - height) {
 			yCollision = true;
 		}
+	}
+
+	public void setVelocity(float[] velocity) {
+		xVelocity = velocity[0];
+		yVelocity = velocity[1];
 	}
 }

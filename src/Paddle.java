@@ -5,18 +5,12 @@ public class Paddle {
 	public int y, x;
 	public static int width = 15;
 	public static int height = 100;
-	public int paddleVelocity;
-
-	//no good names for these variables, since they were just values derived from an equation
-	//they set are used in a calculation that changes the ball's direction based on where it hit the paddle
-	//minimum angle is 15 deg, max is 165 deg
-	float ballDirectionMultiplier = 0.8474576f;
-	float ballDirectionOffset = -33.898305f;
+	public float paddleVelocity;
 
 	public Paddle(int x, int y) {
 		this.y = y;
 		this.x = x;
-		paddleVelocity = 8;
+		paddleVelocity = 8.5f;
 	}
 
 	public void update(boolean[] keys) {
@@ -39,20 +33,24 @@ public class Paddle {
 	}
 
 	public boolean collide(Ball ball) {
+		float ballDirectionMultiplier = Ball.MAX_ANGLE / Math.abs(-(ball.height - 1) - (height - ball.height) / 2);
+		float ballDirectionOffset = (height - ball.height) / 2 * -ballDirectionMultiplier;
+
 		boolean isHit = false;
 		int yRelationship = 0;
 		double ballAngle = 0;
 		if (ball.y > this.y - ball.height && ball.y < this.y + height) {
 			//checks right paddle
 			if (ball.x <= this.x) {
-				if (ball.x + ball.width >= this.x) {
+				if (ball.x + ball.width >= this.x && ball.x + ball.width / 3 * 2 < this.x) {
 					yRelationship = ball.y - this.y;
 					ballAngle = yRelationship * ballDirectionMultiplier + ballDirectionOffset;
 					isHit = true;
 				}
 			//checks left paddle
 			} else if (ball.x >= this.x + width - ball.width) {
-				if (ball.x <= this.x + width && ball.x < this.x + width) {
+				if (ball.x <= this.x + width && ball.x + ball.width / 3 * 2 > this.x + width) {
+					System.out.println("left paddle");
 					yRelationship = ball.y - this.y;
 					ballAngle = yRelationship * -ballDirectionMultiplier - ballDirectionOffset;
 					isHit = true;
@@ -60,14 +58,9 @@ public class Paddle {
 			}
 			//changes angle of the ball based on where on the paddle it was hit, max angle to x axis is 65 deg
 			if (isHit) {
-				ball.xVelocity = 7 * ball.xVelocity / Math.abs(ball.xVelocity);
 				ball.yVelocity = (float) (ball.xVelocity * Math.tan(Math.toRadians(ballAngle)));
 				ball.xVelocity = -ball.xVelocity;
-//				System.out.println("yRelationship: " + yRelationship);
-//				System.out.println("ballAngle: " + ballAngle);
-//				System.out.println("yVelocity: " + (float) (ball.xVelocity * Math.tan(Math.toRadians(ballAngle))));
-//				System.out.println("xVelocity: " + ball.xVelocity);
-//				System.out.println("netVelocity: " + (Math.sqrt(Math.pow(ball.xVelocity, 2) + Math.pow(ball.yVelocity, 2))));
+				System.out.println(ball.xVelocity);
 				return true;
 			}
 		}
