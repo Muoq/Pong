@@ -32,13 +32,14 @@ public class PongGame extends Canvas implements Runnable {
 		window = new JFrame();
 		window.setSize(width, height);
 		window.getContentPane().add(this);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		window.setLocationRelativeTo(null);
 		window.pack();
 
 		screen = new Screen(width, height);
 
 		keyboard = new Keyboard();
+		keyboard.disableAccentMenu();
 		this.addKeyListener(keyboard);
 
 		ball = new Ball(new int[] {width, height});
@@ -50,10 +51,10 @@ public class PongGame extends Canvas implements Runnable {
 		System.out.println(ball.xVelocity);
 
 		paddleRight = new Paddle(width - Paddle.width - 5, (height - Paddle.height) / 2);
-//		paddleLeft = new Paddle(5, (height - Paddle.height) / 2);
+		paddleLeft = new Paddle(5, (height - Paddle.height) / 2);
 
 		window.setVisible(true);
-		requestFocus();
+		this.requestFocusInWindow();
 	}
 
 	public synchronized void start() {
@@ -103,13 +104,8 @@ public class PongGame extends Canvas implements Runnable {
 			ball.yVelocity = -ball.yVelocity;
 		}
 
-		if (paddleRight.collide(ball)) {
-			ball.xVelocity = -ball.xVelocity;
-		}
-
-//		if (paddleLeft.collide(ball)) {
-//			ball.xVelocity = -ball.xVelocity;
-//		}
+		paddleLeft.collide(ball);
+		paddleRight.collide(ball);
 
 		if (ball.x > width - 20 || ball.x <= 0) {
 			ball.xVelocity = -ball.xVelocity;
@@ -117,7 +113,8 @@ public class PongGame extends Canvas implements Runnable {
 
 		keyboard.update();
 		paddleRight.update(keyboard.getKeys());
-//		paddleLeft.update(new boolean[] {keyboard.getKeys()[2], keyboard.getKeys()[3]});
+		paddleLeft.update(new boolean[] {keyboard.getKeys()[2], keyboard.getKeys()[3]});
+
 	}
 
 	public void render() {
@@ -132,9 +129,12 @@ public class PongGame extends Canvas implements Runnable {
 		screen.setBackgroundColor(0);
 		screen.setColor(0xffffff);
 
+//		screen.setColor(Color.yellow.getRGB());
+//		screen.fillRect(100, 0, 30, height);
+
 		ball.render(screen);
 		paddleRight.render(screen);
-//		paddleLeft.render(screen);
+		paddleLeft.render(screen);
 
 		for (int i = 0; i < pixels.length; i++) {
 			pixels[i] = screen.pixels[i];
@@ -163,6 +163,12 @@ public class PongGame extends Canvas implements Runnable {
 
 	public static void main(String[] args) {
 		PongGame pg = new PongGame();
+		pg.window.addWindowListener(new java.awt.event.WindowAdapter() {
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				pg.keyboard.enableAccentMenu();
+				System.exit(0);
+			}
+		});
 		pg.start();
 	}
 
