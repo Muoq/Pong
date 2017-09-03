@@ -42,7 +42,6 @@ public class Ball {
 		this.y += yVelocity;
 
 		if (this.y < 0 || this.y > bounds[1] - height) {
-//			System.out.println(this.y);
 			yCollision = true;
 		}
 	}

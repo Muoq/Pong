@@ -11,7 +11,6 @@ public class PongGame extends Canvas implements Runnable {
 
 	public static int width = 1000;
 	public static int height = 600;
-	public static int paddleHeight, paddleWidth;
 
 	private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
@@ -23,7 +22,7 @@ public class PongGame extends Canvas implements Runnable {
 	Keyboard keyboard;
 
 	Ball ball;
-	Paddle paddle;
+	Paddle paddleRight, paddleLeft;
 
 	private boolean running;
 
@@ -45,15 +44,13 @@ public class PongGame extends Canvas implements Runnable {
 		ball = new Ball(new int[] {width, height});
 		ball.x = (width - ball.width) / 2;
 		ball.y = (height - ball.height) / 2;
-		float[] velocity = getRandomVelocity(6);
+		float[] velocity = getRandomVelocity(3);
 		ball.xVelocity = velocity[0];
 		ball.yVelocity = velocity[1];
+		System.out.println(ball.xVelocity);
 
-		paddleHeight = 70;
-		paddleWidth = 15;
-		paddle = new Paddle(width - paddleWidth - 5, (height - paddleHeight) / 2);
-		paddle.height = paddleHeight;
-		paddle.width = paddleWidth;
+		paddleRight = new Paddle(width - Paddle.width - 5, (height - Paddle.height) / 2);
+//		paddleLeft = new Paddle(5, (height - Paddle.height) / 2);
 
 		window.setVisible(true);
 		requestFocus();
@@ -106,24 +103,21 @@ public class PongGame extends Canvas implements Runnable {
 			ball.yVelocity = -ball.yVelocity;
 		}
 
-//		if (ball.x > paddle.hitBoxSurface - ball.width) {
-//			if (paddle.collide(ball)) {
-//				ball.xVelocity = -ball.xVelocity;
-//				System.out.println(ball.x);
-//				System.out.println(paddle.hitBoxSurface);
-//			}
-//		}
-
-		if (paddle.collide(ball)) {
+		if (paddleRight.collide(ball)) {
 			ball.xVelocity = -ball.xVelocity;
 		}
+
+//		if (paddleLeft.collide(ball)) {
+//			ball.xVelocity = -ball.xVelocity;
+//		}
 
 		if (ball.x > width - 20 || ball.x <= 0) {
 			ball.xVelocity = -ball.xVelocity;
 		}
 
 		keyboard.update();
-		paddle.update(keyboard.getKeys());
+		paddleRight.update(keyboard.getKeys());
+//		paddleLeft.update(new boolean[] {keyboard.getKeys()[2], keyboard.getKeys()[3]});
 	}
 
 	public void render() {
@@ -139,7 +133,8 @@ public class PongGame extends Canvas implements Runnable {
 		screen.setColor(0xffffff);
 
 		ball.render(screen);
-		paddle.render(screen);
+		paddleRight.render(screen);
+//		paddleLeft.render(screen);
 
 		for (int i = 0; i < pixels.length; i++) {
 			pixels[i] = screen.pixels[i];
@@ -160,8 +155,8 @@ public class PongGame extends Canvas implements Runnable {
 //		netVelocity = (float) Math.sqrt(Math.pow(netVelocity, 2) - Math.pow(velocity[0], 2));
 //		velocity[1] = netVelocity;
 
-		velocity[0] = 5.068f;
-		velocity[1] = 3;
+		velocity[0] = 6;
+//		velocity[1] = 3;
 
 		return velocity;
 	}

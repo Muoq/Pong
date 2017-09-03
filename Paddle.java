@@ -3,21 +3,20 @@
  */
 public class Paddle {
 	public int y, x;
-	public int height, width;
+	public static int width = 15;
+	public static int height = 100;
 	public int paddleVelocity;
 
-	int hitBoxSurface;
+	//no good names for these variables, since they were just values derived from an equation
+	//they set are used in a calculation that changes the ball's direction based on where it hit the paddle
+	//minimum angle is 15 deg, max is 165 deg
+	float ballDirectionMultiplier = 1.1016949f;
+	float ballDirectionOffset = -44.067797f;
 
 	public Paddle(int x, int y) {
 		this.y = y;
 		this.x = x;
 		paddleVelocity = 6;
-
-		if (this.x < PongGame.width / 2) {
-			hitBoxSurface = this.x + this.width;
-		} else {
-			hitBoxSurface = this.x;
-		}
 	}
 
 	public void update(boolean[] keys) {
@@ -32,21 +31,41 @@ public class Paddle {
 		if (this.y < 0) {
 			this.y = 0;
 		}
-		if (this.y > PongGame.height - this.height) {
-			this.y = PongGame.height - this.height;
+		if (this.y > PongGame.height - height) {
+			this.y = PongGame.height - height;
 		}
 
 //		System.out.println(this.y);
 	}
 
 	public boolean collide(Ball ball) {
-		System.out.println(ball.x);
-
+		if (ball.y > this.y - ball.height && ball.y < this.y + height) {
+			//checks right paddle
+			if (ball.x <= this.x) {
+				if (ball.x + ball.width >= this.x) {
+					int yRelationship = ball.y - this.y;
+					double ballAngle = yRelationship * ballDirectionMultiplier + ballDirectionOffset;
+					ball.xVelocity = 3.5f;
+					ball.yVelocity = (float) (ball.xVelocity * Math.tan(Math.toRadians(ballAngle)));
+					System.out.println("yRelationship: " + yRelationship);
+					System.out.println("ballAngle: " + ballAngle);
+					System.out.println("yVelocity: " + (float) (ball.xVelocity * Math.tan(Math.toRadians(ballAngle))));
+					System.out.println("xVelocity: " + ball.xVelocity);
+					System.out.println("netVelocity: " + (Math.sqrt(Math.pow(ball.xVelocity, 2) + Math.pow(ball.yVelocity, 2))));
+					return true;
+				}
+			//checks left paddle
+			} else if (ball.x >= this.x + width - ball.width) {
+				if (ball.x <= this.x + width && ball.x < this.x + width) {
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
 	public void render(Screen screen) {
-		screen.fillRect(this.x, this.y, this.width, this.height);
+		screen.fillRect(this.x, this.y, width, height);
 	}
 
 }

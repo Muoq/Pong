@@ -7,15 +7,18 @@ import java.awt.event.KeyListener;
 
 public class Keyboard implements KeyListener {
 	public boolean[] keys = new boolean[160];
-	public boolean up, down;
+	public boolean upKey, downKey, wKey, sKey;
 
 	public void update() {
-		up = keys[KeyEvent.VK_W] || keys[KeyEvent.VK_UP];
-		down = keys[KeyEvent.VK_S] || keys[KeyEvent.VK_DOWN];
+		upKey = keys[KeyEvent.VK_UP];
+		downKey = keys[KeyEvent.VK_DOWN];
+
+		wKey = keys[KeyEvent.VK_W];
+		sKey = keys[KeyEvent.VK_S];
 	}
 
 	public boolean[] getKeys() {
-		return new boolean[] {up, down};
+		return new boolean[] {upKey, downKey, wKey, sKey};
 	}
 
 	public void keyPressed(KeyEvent e) {
