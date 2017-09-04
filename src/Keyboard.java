@@ -10,7 +10,8 @@ import java.io.InputStreamReader;
 
 public class Keyboard implements KeyListener {
 	public boolean[] keys = new boolean[160];
-	public boolean upKey, downKey, wKey, sKey;
+	public boolean upKey, downKey, wKey, sKey, spaceKey;
+	public boolean rightShiftKey;
 
 	public void update() {
 		upKey = keys[KeyEvent.VK_K];
@@ -18,10 +19,18 @@ public class Keyboard implements KeyListener {
 
 		wKey = keys[KeyEvent.VK_A];
 		sKey = keys[KeyEvent.VK_Z];
+
+		spaceKey = keys[KeyEvent.VK_SPACE];
+
+		rightShiftKey = keys[KeyEvent.VK_SHIFT];
 	}
 
 	public boolean[] getKeys() {
-		return new boolean[] {upKey, downKey, wKey, sKey};
+		return new boolean[] {upKey, downKey, wKey, sKey, spaceKey};
+	}
+
+	public boolean[] getExtraKeys() {
+		return new boolean[] {rightShiftKey};
 	}
 
 	public void keyPressed(KeyEvent e) {

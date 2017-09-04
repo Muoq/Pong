@@ -20,6 +20,9 @@ public class Screen {
 		pixels = new int[this.width * this.height];
 
 		this.color = 0xffffff;
+
+		Fonts fonts = new Fonts();
+		fonts.loadFont("/fonts/PressStart2P.ttf");
 	}
 
 	public void clear() {
@@ -77,6 +80,20 @@ public class Screen {
 					pixels[x + y * this.width + xx + yy * width] = this.color;
 				}
 			}
+		}
+	}
+
+	public void drawMiddleLine() {
+		setColor(0xffffff);
+		int lineWidth = 6;
+		fillRect((PongGame.width - lineWidth) / 2, 0, lineWidth, PongGame.height);
+		int numLines = 15;
+		int lineHeight = PongGame.height / (numLines * 2);
+		int yFillCoord = -lineHeight / 2;
+		for (int i = 0; i < numLines + 1; i++) {
+			setColor(0);
+			fillRect((PongGame.width - lineWidth) / 2, yFillCoord, lineWidth, lineHeight);
+			yFillCoord += 2 * lineHeight;
 		}
 	}
 
