@@ -32,25 +32,27 @@ public class Paddle {
 //		System.out.println(this.y);
 	}
 
-	public boolean collide(Ball ball) {
+	public boolean collide(Ball ball, boolean calledByR) {
 		float ballDirectionMultiplier = Ball.MAX_ANGLE / Math.abs(-(ball.height - 1) - (height - ball.height) / 2);
 		float ballDirectionOffset = (height - ball.height) / 2 * -ballDirectionMultiplier;
 
 		boolean isHit = false;
 		int yRelationship = 0;
 		double ballAngle = 0;
+
 		if (ball.y > this.y - ball.height && ball.y < this.y + height) {
 			//checks right paddle
 			if (ball.x <= this.x) {
-				if (ball.x + ball.width >= this.x && ball.x + ball.width / 3 * 2 < this.x) {
+				if (ball.x + ball.width >= this.x/* && ball.x + ball.width / 3 * 2 < this.x*/) {
+					ball.x = this.x - ball.width;
 					yRelationship = ball.y - this.y;
 					ballAngle = yRelationship * ballDirectionMultiplier + ballDirectionOffset;
 					isHit = true;
 				}
 			//checks left paddle
 			} else if (ball.x >= this.x + width - ball.width) {
-				if (ball.x <= this.x + width && ball.x + ball.width / 3 * 2 > this.x + width) {
-					System.out.println("left paddle");
+				if (ball.x <= this.x + width/* && ball.x + ball.width / 3 * 2 > this.x + width*/) {
+					ball.x = this.x + width;
 					yRelationship = ball.y - this.y;
 					ballAngle = yRelationship * -ballDirectionMultiplier - ballDirectionOffset;
 					isHit = true;
@@ -60,7 +62,6 @@ public class Paddle {
 			if (isHit) {
 				ball.yVelocity = (float) (ball.xVelocity * Math.tan(Math.toRadians(ballAngle)));
 				ball.xVelocity = -ball.xVelocity;
-				System.out.println(ball.xVelocity);
 				return true;
 			}
 		}

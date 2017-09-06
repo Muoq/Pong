@@ -1,12 +1,10 @@
-import java.awt.*;
-
 /**
  * Created by victo on 02-08-2017.
  */
 public class Ball {
 
 	public static final float MAX_ANGLE = 55;
-	public static float xVelocity = 9.6f;
+	public static float xVelocity = 12;
 
 	int x, y;
 	float xPrecise, yPrecise;
@@ -22,7 +20,6 @@ public class Ball {
 	}
 
 	public Ball(int x, int y, int[] bounds) {
-		System.out.println(this.xPrecise);
 		this.x = x;
 		this.y = y;
 		this.width = 20;
