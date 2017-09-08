@@ -19,10 +19,10 @@ public class AI {
 	}
 
 	public void update() {
-		int deltaX = ball.x - paddle.x - Paddle.width;
+		int deltaX = Math.abs(ball.getX() - paddle.x - Paddle.width);
 //		System.out.println(deltaX);
 //		System.out.println("yVelocity: " + ball.yVelocity);
-		yPrediction = (int) (((double) ball.yVelocity / Math.abs(ball.xVelocity)) * deltaX + ball.y);
+		yPrediction = (int) (((double) ball.yVelocity / Math.abs(ball.xVelocity)) * deltaX + ball.getY());
 //		System.out.println("yPrediction: " + yPrediction);
 
 		if (paddle.y <= yPrediction && paddle.y + Paddle.height > yPrediction) {

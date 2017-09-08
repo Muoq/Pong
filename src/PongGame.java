@@ -85,6 +85,7 @@ public class PongGame extends Canvas implements Runnable {
 
 		playerOne = new Player(paddleRight);
 		playerTwo = new Player(paddleLeft);
+		playerOne.bindAI(ball);
 		playerTwo.bindAI(ball);
 	}
 
@@ -146,21 +147,26 @@ public class PongGame extends Canvas implements Runnable {
 		ball.update();
 
 		if (ball.getYCollision()) {
+			if (ball.getY() > height/ 2) {
+				ball.setY(height - ball.height);
+			} else {
+				ball.setY(0);
+			}
 			ball.yVelocity = -ball.yVelocity;
 		}
 
 		keyboard.update();
-		playerOne.update(keyboard.getKeys());
+		playerOne.update();
 //		playerTwo.update(new boolean[] {keyboard.getKeys()[2], keyboard.getKeys()[3]});
 		playerTwo.update();
 
 //		System.out.println("Y: " + ball.y);
-		if (ball.x < 0) {
+		if (ball.getX() < 0) {
 			playerOne.score++;
 			resetPlayingField();
 			ball.xVelocity = +(Math.abs(ball.xVelocity));
 			newScore = true;
-		} else if (ball.x > width - ball.width) {
+		} else if (ball.getX() > width - ball.width) {
 			playerTwo.score++;
 			resetPlayingField();
 			ball.xVelocity = -(Math.abs(ball.xVelocity));

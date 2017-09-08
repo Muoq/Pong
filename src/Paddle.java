@@ -40,20 +40,20 @@ public class Paddle {
 		int yRelationship = 0;
 		double ballAngle = 0;
 
-		if (ball.y > this.y - ball.height && ball.y < this.y + height) {
+		if (ball.getY() > this.y - ball.height && ball.getY() < this.y + height) {
 			//checks right paddle
-			if (ball.x <= this.x) {
-				if (ball.x + ball.width >= this.x/* && ball.x + ball.width / 3 * 2 < this.x*/) {
-					ball.x = this.x - ball.width;
-					yRelationship = ball.y - this.y;
+			if (ball.getX() <= this.x) {
+				if (ball.getX() + ball.width >= this.x/* && ball.x + ball.width / 3 * 2 < this.x*/) {
+					ball.setX(this.x - ball.width);
+					yRelationship = ball.getY() - this.y;
 					ballAngle = yRelationship * ballDirectionMultiplier + ballDirectionOffset;
 					isHit = true;
 				}
 			//checks left paddle
-			} else if (ball.x >= this.x + width - ball.width) {
-				if (ball.x <= this.x + width/* && ball.x + ball.width / 3 * 2 > this.x + width*/) {
-					ball.x = this.x + width;
-					yRelationship = ball.y - this.y;
+			} else if (ball.getX() >= this.x + width - ball.width) {
+				if (ball.getX() <= this.x + width/* && ball.x + ball.width / 3 * 2 > this.x + width*/) {
+					ball.setX(this.x + width);
+					yRelationship = ball.getY() - this.y;
 					ballAngle = yRelationship * -ballDirectionMultiplier - ballDirectionOffset;
 					isHit = true;
 				}

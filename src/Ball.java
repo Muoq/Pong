@@ -6,7 +6,7 @@ public class Ball {
 	public static final float MAX_ANGLE = 55;
 	public static float xVelocity = 12;
 
-	int x, y;
+	private int x, y;
 	float xPrecise, yPrecise;
 	public float yVelocity;
 	public int width, height;
@@ -63,5 +63,13 @@ public class Ball {
 	public void setY(int y) {
 		this.y = y;
 		this.yPrecise = y;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
 	}
 }
